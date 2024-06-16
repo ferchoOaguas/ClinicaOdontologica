@@ -11,15 +11,16 @@ import java.time.LocalDate;
 import java.util.List;
 
 public interface ITurnoRepository extends JpaRepository<Turno, Integer> {
-
         //Buscar turnos entre dos fechas
         @Query("Select t from Turno t where t.fecha BETWEEN :startDate and :endDate")
         List<Turno> buscarTurnoEntreFechas(@Param("startDate")LocalDate startDate, @Param("endDate")LocalDate endDate);
 
-    //Buscar por odontologo
-
+        //Buscar por odontologo
         @Query("SELECT t FROM Turno t WHERE t.odontologo.id = :odontologoId")
         List<Turno> findByOdontologoId(@Param("odontologoId") Integer odontologoId);
 
+        //Buscar todos los turnos posteriores a la fecha actual.
+        @Query("SELECT t FROM Turno t WHERE :startDate > CURRENT_DATE")
+        List<Turno> buscarPorId(@Param("startDate")LocalDate startDate);
 
 }

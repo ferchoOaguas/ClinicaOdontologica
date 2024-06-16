@@ -45,6 +45,15 @@ public class TurnoController {
         turnoService.actualizarTurno(id, turno);
         return ResponseEntity.ok("Turno modificado");
     }
+    @GetMapping("/{id}")
+    public ResponseEntity<TurnoResponseDto> buscarTurnoPorID(@PathVariable Integer id){
+        TurnoResponseDto turnoResponseDto = turnoService.buscarPorId(id);
+        if(turnoResponseDto != null){
+            return ResponseEntity.ok(turnoResponseDto);
+        }else{
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+        }
+    }
     private DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
     @GetMapping("/fechas")
     public ResponseEntity<List<TurnoResponseDto>> buscarEntreFechas(@RequestParam String inicio, @RequestParam String fin){

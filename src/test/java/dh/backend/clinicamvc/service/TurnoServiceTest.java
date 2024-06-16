@@ -7,18 +7,23 @@ import dh.backend.clinicamvc.Dto.response.PacienteResponseDto;
 import dh.backend.clinicamvc.Dto.response.TurnoResponseDto;
 import dh.backend.clinicamvc.entity.Odontologo;
 import dh.backend.clinicamvc.entity.Paciente;
+import dh.backend.clinicamvc.entity.Turno;
+import dh.backend.clinicamvc.exception.BadRequestException;
 import dh.backend.clinicamvc.service.impl.OdontologoService;
 import dh.backend.clinicamvc.service.impl.PacienteService;
 import dh.backend.clinicamvc.service.impl.TurnoService;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 
 import java.time.LocalDate;
 import java.util.List;
-
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -42,6 +47,8 @@ public class TurnoServiceTest {
     private PacienteResponseDto paciente;
     private OdontologoResponseDto odontologo;
     private TurnoRequestDto turno;
+    /*Objeto de mapeo*/
+    private ModelMapper modelMapper;
 
 
     @BeforeEach
@@ -72,12 +79,25 @@ public class TurnoServiceTest {
 
 
     @Test
-    public void testCrearTurno() throws Exception {
+    public void testCrearTurno() throws BadRequestException {
         turnoService.registrar(turno);
+        assertNotNull(turno);
+    }
 
-        List<TurnoResponseDto> buscarTurno = turnoService.buscarTodos();
+    @Test
+    @DisplayName("Testear busqueda turno por id")
+    public void testBuscarTurno() throws BadRequestException{
+        TurnoResponseDto crearTurno =  turnoService.registrar(turno);
+        Integer id = crearTurno.getId();
+        TurnoResponseDto turnoEncontrado = turnoService.buscarPorId(id);
+        assertEquals(id, turnoEncontrado.getId());
+    }
 
-        assertFalse(buscarTurno.isEmpty());
+    @Test
+    @DisplayName("Testear busqueda todos los turnos")
+    void testBusquedaTodos() {
+        List<TurnoResponseDto> turnos = turnoService.buscarTodos();
+        assertFalse(turnos.isEmpty());
     }
 }
 
